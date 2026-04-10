@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LuxeMirror Salon</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23141a24'/%3E%3Ctext x='50%25' y='58%25' text-anchor='middle' font-size='34' font-family='Arial' fill='%23d5b57a'%3ELS%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="app" class="mirror-app" aria-live="polite">
+      <div class="mirror-shell">
+        <header class="brand-row glass-panel">
+          <div class="brand-mark">
+            <span class="brand-logo">LS</span>
+            <div>
+              <p class="brand-title">Luxe Strand Salon</p>
+              <p class="brand-sub">Smart Mirror Suite</p>
+            </div>
+          </div>
+          <div class="clock-block">
+            <p id="clockTime" class="clock-time">--:--</p>
+            <p id="clockDate" class="clock-date">Loading date...</p>
+          </div>
+        </header>
+
+        <main class="mirror-layout">
+          <section class="grid-card top-left glass-panel" data-panel="client" tabindex="0" data-focusable="true">
+            <div id="clientProfile"></div>
+          </section>
+
+          <section class="grid-card top-right glass-panel" data-panel="appointments" tabindex="0" data-focusable="true">
+            <h2 class="panel-title">Upcoming Appointments</h2>
+            <div id="upcomingAppointments" class="appointments-list scrollable"></div>
+          </section>
+
+          <section class="grid-card left-middle glass-panel" data-panel="services" tabindex="0" data-focusable="true">
+            <div id="servicesToday"></div>
+            <div class="section-divider"></div>
+            <h3 class="panel-subtitle">Retail Recommendations</h3>
+            <div id="productRecommendations" class="product-grid"></div>
+          </section>
+
+          <section class="grid-card right-middle glass-panel" data-panel="formula" tabindex="0" data-focusable="true">
+            <div id="colorSettings"></div>
+          </section>
+
+          <section class="reflection-zone" aria-label="Client reflection zone">
+            <div class="camera-placeholder">
+              <div class="camera-overlay"></div>
+              <p>Live Reflection / Camera Zone</p>
+            </div>
+          </section>
+
+          <section class="grid-card bottom-center glass-panel" data-panel="preview" tabindex="0" data-focusable="true">
+            <h2 class="panel-title">Before & Live Preview</h2>
+            <div id="previewSection" class="preview-row"></div>
+          </section>
+        </main>
+
+        <nav class="action-bar glass-panel" aria-label="Primary navigation">
+          <button class="action-btn" data-tab="client">Client</button>
+          <button class="action-btn" data-tab="formula">Formula</button>
+          <button class="action-btn" data-tab="preview">Preview</button>
+          <button class="action-btn" data-tab="products">Products</button>
+          <button class="action-btn" data-tab="appointments">Appointments</button>
+          <button class="action-btn" data-tab="settings">Settings</button>
+        </nav>
+      </div>
+
+      <aside id="quickActions" class="quick-actions glass-panel" aria-hidden="true">
+        <h3>Quick Actions</h3>
+        <button class="quick-btn" data-focusable="true">Mark Step Complete</button>
+        <button class="quick-btn" data-focusable="true">Notify Front Desk</button>
+        <button class="quick-btn" data-focusable="true">Start Processing Timer</button>
+        <button class="quick-btn" data-focusable="true">Save Formula Snapshot</button>
+      </aside>
+
+      <div id="gestureHud" class="gesture-hud">
+        <div id="gestureLabel" class="gesture-label">Gesture: idle</div>
+        <div class="dwell-wrap" aria-hidden="true">
+          <svg class="dwell-ring" viewBox="0 0 48 48">
+            <circle class="ring-bg" cx="24" cy="24" r="20"></circle>
+            <circle id="dwellProgress" class="ring-progress" cx="24" cy="24" r="20"></circle>
+          </svg>
+          <span id="dwellText">Hold to select</span>
+        </div>
+      </div>
+
+      <div id="idleOverlay" class="idle-overlay hidden" role="dialog" aria-modal="true">
+        <div class="idle-card glass-panel">
+          <p class="idle-logo">Luxe Strand</p>
+          <h1>Smart Mirror</h1>
+          <p id="idleClock" class="idle-clock">--:--</p>
+          <p id="idleDate" class="idle-date">Loading...</p>
+          <p class="idle-prompt">Wave or press any key to begin</p>
+        </div>
+      </div>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
