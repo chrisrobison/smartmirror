@@ -317,6 +317,61 @@ class GestureController {
   }
 }
 
+class CameraController {
+  constructor(videoElement, statusElement, zoneElement) {
+    this.videoElement = videoElement;
+    this.statusElement = statusElement;
+    this.zoneElement = zoneElement;
+    this.stream = null;
+  }
+
+  async start() {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      this.setStatus('Camera unavailable in this browser');
+      return;
+    }
+
+    const secureContext = window.isSecureContext || location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+    if (!secureContext) {
+      this.setStatus('Camera needs HTTPS or localhost');
+      return;
+    }
+
+    this.setStatus('Requesting camera permission...');
+    try {
+      this.stream = await navigator.mediaDevices.getUserMedia({
+        audio: false,
+        video: {
+          facingMode: 'user',
+          width: { ideal: 1080 },
+          height: { ideal: 1920 }
+        }
+      });
+
+      this.videoElement.srcObject = this.stream;
+      await this.videoElement.play();
+      this.zoneElement.classList.add('has-camera');
+      this.setStatus('Live camera connected');
+    } catch (error) {
+      const message = this.getErrorMessage(error);
+      this.zoneElement.classList.remove('has-camera');
+      this.setStatus(message);
+    }
+  }
+
+  getErrorMessage(error) {
+    if (!error || !error.name) return 'Camera unavailable';
+    if (error.name === 'NotAllowedError') return 'Camera blocked. Allow access in browser settings.';
+    if (error.name === 'NotFoundError') return 'No camera device found';
+    if (error.name === 'NotReadableError') return 'Camera is busy in another app';
+    return 'Camera could not start';
+  }
+
+  setStatus(text) {
+    this.statusElement.textContent = text;
+  }
+}
+
 class SalonMirrorUI {
   constructor(store) {
     this.store = store;
@@ -332,6 +387,9 @@ class SalonMirrorUI {
     this.idleOverlay = document.getElementById('idleOverlay');
     this.idleClock = document.getElementById('idleClock');
     this.idleDate = document.getElementById('idleDate');
+    this.cameraElement = document.getElementById('mirrorCamera');
+    this.cameraStatus = document.getElementById('cameraStatus');
+    this.reflectionZone = document.querySelector('.reflection-zone');
 
     this.tabButtons = Array.from(document.querySelectorAll('.action-btn'));
     this.panelCards = Array.from(document.querySelectorAll('.grid-card'));
@@ -345,6 +403,7 @@ class SalonMirrorUI {
     });
 
     this.panelManager = new PanelManager(this.panelCards, this.tabButtons);
+    this.cameraController = new CameraController(this.cameraElement, this.cameraStatus, this.reflectionZone);
     this.focusables = [];
   }
 
@@ -357,6 +416,10 @@ class SalonMirrorUI {
 
     this.store.subscribe((state) => this.render(state));
     this.startClock();
+  }
+
+  startCamera() {
+    this.cameraController.start();
   }
 
   render(state) {
@@ -498,6 +561,7 @@ class App {
 
   start() {
     this.ui.mount();
+    this.ui.startCamera();
     this.gestureController.onGesture((gesture) => this.handleGesture(gesture));
     this.gestureController.start();
     this.bindQuickActionButtons();
