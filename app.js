@@ -323,6 +323,7 @@ class CameraController {
     this.statusElement = statusElement;
     this.zoneElement = zoneElement;
     this.stream = null;
+    this.retryBound = false;
   }
 
   async start() {
@@ -337,9 +338,15 @@ class CameraController {
       return;
     }
 
+    if (this.stream && this.stream.active) {
+      this.zoneElement.classList.add('has-camera');
+      await this.ensurePlayback();
+      return;
+    }
+
     this.setStatus('Requesting camera permission...');
     try {
-      this.stream = await navigator.mediaDevices.getUserMedia({
+      this.stream = await this.requestStream({
         audio: false,
         video: {
           facingMode: 'user',
@@ -349,13 +356,64 @@ class CameraController {
       });
 
       this.videoElement.srcObject = this.stream;
-      await this.videoElement.play();
+      this.zoneElement.classList.remove('camera-paused');
       this.zoneElement.classList.add('has-camera');
       this.setStatus('Live camera connected');
+      await this.ensurePlayback();
+      this.bindRetryOnTap();
     } catch (error) {
       const message = this.getErrorMessage(error);
       this.zoneElement.classList.remove('has-camera');
+      this.zoneElement.classList.add('camera-paused');
       this.setStatus(message);
+      this.bindRetryOnTap();
+    }
+  }
+
+  async requestStream(primaryConstraints) {
+    try {
+      return await navigator.mediaDevices.getUserMedia(primaryConstraints);
+    } catch (error) {
+      // Fall back to a minimal request for broader hardware compatibility.
+      if (error && (error.name === 'OverconstrainedError' || error.name === 'NotFoundError')) {
+        return navigator.mediaDevices.getUserMedia({ audio: false, video: true });
+      }
+      throw error;
+    }
+  }
+
+  async ensurePlayback() {
+    try {
+      await this.videoElement.play();
+      this.zoneElement.classList.remove('camera-paused');
+    } catch (_) {
+      this.zoneElement.classList.add('camera-paused');
+      this.setStatus('Tap reflection zone to start camera');
+    }
+  }
+
+  bindRetryOnTap() {
+    if (this.retryBound) return;
+    this.retryBound = true;
+    this.zoneElement.addEventListener('click', () => {
+      if (this.stream && this.stream.active) {
+        this.ensurePlayback();
+      } else {
+        this.start();
+      }
+    });
+    window.addEventListener('focus', () => {
+      if (this.stream && this.stream.active) this.ensurePlayback();
+    });
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden && this.stream && this.stream.active) this.ensurePlayback();
+    });
+  }
+
+  stop() {
+    if (this.stream) {
+      this.stream.getTracks().forEach((track) => track.stop());
+      this.stream = null;
     }
   }
 

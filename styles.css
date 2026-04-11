@@ -197,6 +197,7 @@ body {
   color: rgba(255, 255, 255, 0.66);
   letter-spacing: 0.08em;
   z-index: 2;
+  pointer-events: none;
 }
 
 .camera-placeholder p {
@@ -222,6 +223,19 @@ body {
   position: absolute;
   left: 10px;
   bottom: 10px;
+}
+
+.reflection-zone.has-camera .camera-overlay {
+  background: radial-gradient(circle at 50% 38%, rgba(255, 255, 255, 0.08), transparent 64%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(0, 0, 0, 0.06));
+}
+
+.reflection-zone.camera-paused {
+  cursor: pointer;
+}
+
+.reflection-zone.camera-paused #cameraStatus {
+  opacity: 1;
 }
 
 .panel-title {
