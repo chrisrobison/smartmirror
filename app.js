@@ -1,288 +1,101 @@
 'use strict';
 
-const mockData = {
-  currentClient: {
-    id: 'CL-89314',
-    name: 'Isabella Marquez',
-    preferredName: 'Isa',
-    loyaltyLevel: 'Gold Atelier',
-    lastVisit: '2026-03-13',
-    preferredStyle: 'Soft dimensional balayage with curtain layers',
-    notes:
-      'Prefers cool-beige finish, low fragrance products, and soft blowout movement. Wants brightness around face framing without harsh contrast.',
-    allergies: 'Ammonia sensitivity (use low-ammonia line)',
-    stylist: 'Camille R.',
-    currentService: {
-      name: 'Balayage Refresh + Gloss + Blowout',
-      duration: '2h 15m',
-      status: 'In Progress',
-      step: 'Section 3 highlight paint + foil wrap'
-    },
-    formula: {
-      name: 'Luminous Beige 7/13',
-      breakdown: '30g 7N + 20g 8A + 10g clear gloss',
-      developerVolume: '20 vol',
-      mixRatio: '1:1.5',
-      processingTime: 32
-    },
-    beforeImage:
-      'https://images.unsplash.com/photo-1522336284037-91f7da073525?auto=format&fit=crop&w=900&q=80',
-    previewImage:
-      'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?auto=format&fit=crop&w=900&q=80'
+const componentData = [
+  {
+    id: 'client-profile',
+    zone: 'top',
+    title: 'Client Profile',
+    summary: 'Allergies, target look, and visit notes.',
+    accent: '#63d8ff',
+    detailType: 'facts',
+    details: [
+      ['Client', 'Isabella Marquez'],
+      ['Look', 'Soft dimensional balayage + curtain layers'],
+      ['Allergy', 'Ammonia sensitivity'],
+      ['Stylist', 'Camille R.']
+    ]
   },
-  upcomingAppointments: [
-    { time: '3:15 PM', clientName: 'Natalie Kim', service: 'Root Melt + Tone', stylist: 'Camille', status: 'confirmed' },
-    { time: '4:00 PM', clientName: 'Jules Parker', service: 'Precision Bob Cut', stylist: 'Andre', status: 'check-in' },
-    { time: '4:45 PM', clientName: 'Maya Patel', service: 'Gloss + Blowout', stylist: 'Nina', status: 'pending' },
-    { time: '5:30 PM', clientName: 'Grace Lin', service: 'Full Highlight', stylist: 'Camille', status: 'processing' },
-    { time: '6:15 PM', clientName: 'Sofia Santos', service: 'Color Correction Consult', stylist: 'Andre', status: 'confirmed' }
-  ],
-  products: [
-    {
-      name: 'Keratine Velvet Mask',
-      category: 'Treatment',
-      useType: 'Post-color hydration',
-      image: 'https://images.unsplash.com/photo-1598662972299-5408ddb8a3dc?auto=format&fit=crop&w=220&q=80'
-    },
-    {
-      name: 'LumiTone Color Shield',
-      category: 'Shampoo',
-      useType: 'Retail recommendation',
-      image: 'https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&w=220&q=80'
-    },
-    {
-      name: 'SilkMist Heat Veil',
-      category: 'Styling',
-      useType: 'Blowout protection',
-      image: 'https://images.unsplash.com/photo-1556228578-8c89e6adf883?auto=format&fit=crop&w=220&q=80'
-    }
-  ],
-  colorSettings: {
-    baseShade: '7N',
-    tone: 62,
-    warmth: 38,
-    liftLevel: 4,
-    developerVolume: 20,
-    mixRatio: '1:1.5',
-    processingTime: 32,
-    swatches: ['#4c3025', '#6a4537', '#8d6250', '#ba8a70', '#d0ad8c', '#ecd2ba']
+  {
+    id: 'appointments',
+    zone: 'top',
+    title: 'Appointments',
+    summary: 'Timeline for the next 3 guests.',
+    accent: '#a8c0ff',
+    detailType: 'menu',
+    details: ['3:15 PM Natalie Kim - Root Melt + Tone', '4:00 PM Jules Parker - Precision Bob', '4:45 PM Maya Patel - Gloss + Blowout']
+  },
+  {
+    id: 'formula-board',
+    zone: 'left',
+    title: 'Formula Board',
+    summary: 'Current mix and process controls.',
+    accent: '#6bf0b6',
+    detailType: 'menu',
+    details: ['Adjust tone slider', 'Adjust warmth slider', 'Restart processing timer', 'Save formula snapshot']
+  },
+  {
+    id: 'processing-timer',
+    zone: 'left',
+    title: 'Processing Timer',
+    summary: 'Remaining: 31m',
+    accent: '#f2c46d',
+    detailType: 'facts',
+    details: [
+      ['Target', '32 minutes'],
+      ['Remaining', '31 minutes'],
+      ['Developer', '20 vol']
+    ]
+  },
+  {
+    id: 'preview-gallery',
+    zone: 'right',
+    title: 'Preview Gallery',
+    summary: 'Before vs predicted finish.',
+    accent: '#ffb08e',
+    detailType: 'gallery',
+    details: [
+      'https://images.unsplash.com/photo-1522336284037-91f7da073525?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1519699047748-de8e457a634e?auto=format&fit=crop&w=900&q=80'
+    ]
+  },
+  {
+    id: 'retail-reco',
+    zone: 'right',
+    title: 'Retail Reco',
+    summary: 'Products likely to convert post-service.',
+    accent: '#f199ff',
+    detailType: 'menu',
+    details: ['LumiTone Color Shield', 'Keratine Velvet Mask', 'SilkMist Heat Veil']
+  },
+  {
+    id: 'quick-actions',
+    zone: 'bottom',
+    title: 'Quick Actions',
+    summary: 'Hands-free macros for salon flow.',
+    accent: '#86ffe2',
+    detailType: 'menu',
+    details: ['Notify front desk', 'Mark paint section complete', 'Add rinse reminder', 'Flag client check-out prep']
+  },
+  {
+    id: 'notes',
+    zone: 'bottom',
+    title: 'Session Notes',
+    summary: 'Voice-ready notes and reminders.',
+    accent: '#82abff',
+    detailType: 'facts',
+    details: [
+      ['Reminder', 'Client requests cooler finish in front frame'],
+      ['Inventory', 'Low stock: 8A toner'],
+      ['Follow-up', 'Book 8-week gloss refresh']
+    ]
   }
-};
-
-class StateStore {
-  constructor(initialData) {
-    this.state = {
-      ...initialData,
-      selectedTab: 'client',
-      focusedIndex: 0,
-      quickActionsOpen: false,
-      previewZoom: 1,
-      processingRemainingSeconds: initialData.colorSettings.processingTime * 60,
-      attractMode: false,
-      lastInteractionAt: Date.now()
-    };
-    this.listeners = [];
-  }
-
-  subscribe(listener) {
-    this.listeners.push(listener);
-    listener(this.state);
-  }
-
-  setState(partial) {
-    this.state = { ...this.state, ...partial };
-    this.state.lastInteractionAt = Date.now();
-    this.listeners.forEach((listener) => listener(this.state));
-  }
-
-  getState() {
-    return this.state;
-  }
-}
-
-class AppointmentList {
-  constructor(container) {
-    this.container = container;
-  }
-
-  render(list) {
-    this.container.innerHTML = list
-      .map(
-        (item) => `
-        <article class="appointment-item" data-focusable="true" tabindex="0">
-          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
-            <span class="appointment-time">${item.time}</span>
-            <span class="badge ${item.status}">${item.status}</span>
-          </div>
-          <p style="margin:8px 0 2px;font-weight:700;">${item.clientName}</p>
-          <p class="muted" style="margin:0;font-size:.9rem;">${item.service} • ${item.stylist}</p>
-        </article>
-      `
-      )
-      .join('');
-  }
-
-  scroll(direction) {
-    const delta = direction === 'up' ? -120 : 120;
-    this.container.scrollBy({ top: delta, behavior: 'smooth' });
-  }
-}
-
-class FormulaController {
-  constructor(container, onApply) {
-    this.container = container;
-    this.onApply = onApply;
-  }
-
-  render(clientFormula, settings, remainingSeconds) {
-    const mm = Math.floor(remainingSeconds / 60);
-    const ss = remainingSeconds % 60;
-    this.container.innerHTML = `
-      <h2 class="formula-title">${clientFormula.name}</h2>
-      <p class="formula-breakdown">${clientFormula.breakdown}</p>
-      <p class="muted" style="margin:0 0 8px;">Developer ${settings.developerVolume} vol • Mix ${settings.mixRatio}</p>
-
-      <div class="slider-group">
-        ${this.slider('Tone', 'tone', settings.tone)}
-        ${this.slider('Warmth', 'warmth', settings.warmth)}
-        ${this.slider('Lift', 'liftLevel', settings.liftLevel, 1, 10)}
-      </div>
-
-      <p style="margin:12px 0 8px;font-weight:700;">Swatches</p>
-      <div class="swatches">
-        ${settings.swatches.map((color) => `<span class="swatch" style="background:${color}" title="${color}"></span>`).join('')}
-      </div>
-
-      <p style="margin:0 0 10px;">Processing Timer: <strong id="processingTimer">${mm}:${String(ss).padStart(2, '0')}</strong></p>
-      <button class="apply-btn pulse" id="applyPreviewBtn" data-focusable="true">Apply Preview</button>
-    `;
-
-    this.container.querySelectorAll('input[type="range"]').forEach((input) => {
-      input.addEventListener('input', (event) => {
-        const name = event.target.name;
-        const value = Number(event.target.value);
-        const valueNode = this.container.querySelector(`[data-value="${name}"]`);
-        if (valueNode) valueNode.textContent = value;
-        this.onApply({ [name]: value }, false);
-      });
-    });
-
-    this.container.querySelector('#applyPreviewBtn').addEventListener('click', () => this.onApply({}, true));
-  }
-
-  slider(label, name, value, min = 0, max = 100) {
-    return `
-      <label class="slider-row">
-        <span>${label}</span>
-        <input type="range" name="${name}" min="${min}" max="${max}" value="${value}" />
-        <span data-value="${name}">${value}</span>
-      </label>
-    `;
-  }
-}
-
-class PreviewController {
-  constructor(container) {
-    this.container = container;
-  }
-
-  render(beforeImage, previewImage, zoom) {
-    this.container.innerHTML = `
-      <article class="preview-card" data-focusable="true" tabindex="0">
-        <span class="preview-label">Before</span>
-        <img src="${beforeImage}" alt="Client before" />
-      </article>
-      <article class="preview-card" data-focusable="true" tabindex="0">
-        <span class="preview-label">Live Preview</span>
-        <img src="${previewImage}" alt="Client color preview" style="transform:scale(${zoom});" />
-      </article>
-    `;
-  }
-}
-
-class PanelManager {
-  constructor(panelElements, tabButtons) {
-    this.panels = panelElements;
-    this.tabButtons = tabButtons;
-    this.order = ['client', 'services', 'formula', 'preview', 'appointments', 'products', 'settings'];
-  }
-
-  setActive(tab) {
-    this.tabButtons.forEach((button) => button.classList.toggle('active', button.dataset.tab === tab));
-
-    this.panels.forEach((panel) => {
-      const panelName = panel.dataset.panel;
-      panel.classList.toggle(
-        'active-panel',
-        panelName === tab || (tab === 'products' && panelName === 'services') || (tab === 'client' && panelName === 'client')
-      );
-    });
-  }
-
-  next(current, direction) {
-    const currentIndex = this.order.indexOf(current);
-    if (currentIndex < 0) return this.order[0];
-    if (direction === 'left') return this.order[(currentIndex + 1) % this.order.length];
-    return this.order[(currentIndex - 1 + this.order.length) % this.order.length];
-  }
-}
-
-class KeyboardGestureFallback {
-  start(emit) {
-    this.onKeyDown = (event) => {
-      const map = {
-        ArrowLeft: 'swipeLeft',
-        ArrowRight: 'swipeRight',
-        ArrowUp: 'swipeUp',
-        ArrowDown: 'swipeDown',
-        Enter: 'dwellSelect',
-        ' ': 'openPalm',
-        '+': 'zoomIn',
-        '=': 'zoomIn',
-        '-': 'zoomOut'
-      };
-      if (map[event.key]) {
-        if (event.key !== 'Enter') event.preventDefault();
-        emit({ type: map[event.key], source: 'keyboard' });
-      }
-    };
-    window.addEventListener('keydown', this.onKeyDown);
-  }
-
-  stop() {
-    window.removeEventListener('keydown', this.onKeyDown);
-  }
-}
-
-class MockGestureProvider {
-  start(emit) {
-    this.timer = setInterval(() => {
-      const random = Math.random();
-      if (random > 0.985) emit({ type: 'openPalm', source: 'mock' });
-    }, 1000);
-    this.emit = emit;
-  }
-
-  stop() {
-    clearInterval(this.timer);
-  }
-}
-
-class VisionGestureProvider {
-  start() {
-    // Placeholder adapter for real hand-tracking integration.
-  }
-
-  stop() {}
-}
+];
 
 class GestureController {
   constructor(providers = []) {
     this.providers = providers;
     this.handlers = [];
-    this.dwellMs = 1500;
-    this.activeDwellTimer = null;
-    this.activeDwellInterval = null;
   }
 
   onGesture(handler) {
@@ -296,449 +109,313 @@ class GestureController {
   emit(gesture) {
     this.handlers.forEach((handler) => handler(gesture));
   }
-
-  beginDwell(targetId, onProgress, onComplete) {
-    this.stopDwell();
-    const start = Date.now();
-    this.activeDwellInterval = setInterval(() => {
-      const elapsed = Date.now() - start;
-      const progress = Math.min(1, elapsed / this.dwellMs);
-      onProgress(progress);
-      if (progress >= 1) {
-        this.stopDwell();
-        onComplete(targetId);
-      }
-    }, 80);
-  }
-
-  stopDwell() {
-    clearInterval(this.activeDwellInterval);
-    clearTimeout(this.activeDwellTimer);
-  }
 }
 
-class CameraController {
-  constructor(videoElement, statusElement, zoneElement) {
-    this.videoElement = videoElement;
-    this.statusElement = statusElement;
-    this.zoneElement = zoneElement;
-    this.stream = null;
-    this.retryBound = false;
-  }
+class KeyboardGestureFallback {
+  start(emit) {
+    this.onKeyDown = (event) => {
+      const map = {
+        ArrowLeft: 'swipeLeft',
+        ArrowRight: 'swipeRight',
+        Enter: 'fist',
+        f: 'fist',
+        F: 'fist',
+        ' ': 'palmUp'
+      };
 
-  async start() {
-    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-      this.setStatus('Camera unavailable in this browser');
-      return;
-    }
+      if (!map[event.key]) return;
+      event.preventDefault();
+      emit({ type: map[event.key], source: 'keyboard' });
+    };
 
-    const secureContext = window.isSecureContext || location.hostname === 'localhost' || location.hostname === '127.0.0.1';
-    if (!secureContext) {
-      this.setStatus('Camera needs HTTPS or localhost');
-      return;
-    }
-
-    if (this.stream && this.stream.active) {
-      this.zoneElement.classList.add('has-camera');
-      await this.ensurePlayback();
-      return;
-    }
-
-    this.setStatus('Requesting camera permission...');
-    try {
-      this.stream = await this.requestStream({
-        audio: false,
-        video: {
-          facingMode: 'user',
-          width: { ideal: 1080 },
-          height: { ideal: 1920 }
-        }
+    this.externalGesture = (event) => {
+      if (!event.detail || !event.detail.type) return;
+      emit({
+        type: event.detail.type,
+        source: event.detail.source || 'external'
       });
+    };
 
-      this.videoElement.srcObject = this.stream;
-      this.zoneElement.classList.remove('camera-paused');
-      this.zoneElement.classList.add('has-camera');
-      this.setStatus('Live camera connected');
-      await this.ensurePlayback();
-      this.bindRetryOnTap();
-    } catch (error) {
-      const message = this.getErrorMessage(error);
-      this.zoneElement.classList.remove('has-camera');
-      this.zoneElement.classList.add('camera-paused');
-      this.setStatus(message);
-      this.bindRetryOnTap();
-    }
-  }
-
-  async requestStream(primaryConstraints) {
-    try {
-      return await navigator.mediaDevices.getUserMedia(primaryConstraints);
-    } catch (error) {
-      // Fall back to a minimal request for broader hardware compatibility.
-      if (error && (error.name === 'OverconstrainedError' || error.name === 'NotFoundError')) {
-        return navigator.mediaDevices.getUserMedia({ audio: false, video: true });
-      }
-      throw error;
-    }
-  }
-
-  async ensurePlayback() {
-    try {
-      await this.videoElement.play();
-      this.zoneElement.classList.remove('camera-paused');
-    } catch (_) {
-      this.zoneElement.classList.add('camera-paused');
-      this.setStatus('Tap reflection zone to start camera');
-    }
-  }
-
-  bindRetryOnTap() {
-    if (this.retryBound) return;
-    this.retryBound = true;
-    this.zoneElement.addEventListener('click', () => {
-      if (this.stream && this.stream.active) {
-        this.ensurePlayback();
-      } else {
-        this.start();
-      }
-    });
-    window.addEventListener('focus', () => {
-      if (this.stream && this.stream.active) this.ensurePlayback();
-    });
-    document.addEventListener('visibilitychange', () => {
-      if (!document.hidden && this.stream && this.stream.active) this.ensurePlayback();
-    });
+    window.addEventListener('keydown', this.onKeyDown);
+    window.addEventListener('smartmirror:gesture', this.externalGesture);
   }
 
   stop() {
-    if (this.stream) {
-      this.stream.getTracks().forEach((track) => track.stop());
-      this.stream = null;
-    }
-  }
-
-  getErrorMessage(error) {
-    if (!error || !error.name) return 'Camera unavailable';
-    if (error.name === 'NotAllowedError') return 'Camera blocked. Allow access in browser settings.';
-    if (error.name === 'NotFoundError') return 'No camera device found';
-    if (error.name === 'NotReadableError') return 'Camera is busy in another app';
-    return 'Camera could not start';
-  }
-
-  setStatus(text) {
-    this.statusElement.textContent = text;
+    window.removeEventListener('keydown', this.onKeyDown);
+    window.removeEventListener('smartmirror:gesture', this.externalGesture);
   }
 }
 
-class SalonMirrorUI {
-  constructor(store) {
-    this.store = store;
-    this.clientRoot = document.getElementById('clientProfile');
-    this.serviceRoot = document.getElementById('servicesToday');
-    this.productRoot = document.getElementById('productRecommendations');
-    this.quickActions = document.getElementById('quickActions');
-    this.gestureLabel = document.getElementById('gestureLabel');
-    this.dwellRing = document.getElementById('dwellProgress');
-    this.dwellText = document.getElementById('dwellText');
+class VisionGestureProvider {
+  start() {
+    // Connect the live recognizer by dispatching:
+    // window.dispatchEvent(new CustomEvent('smartmirror:gesture', { detail: { type: 'palmUp' } }));
+  }
+
+  stop() {}
+}
+
+class SmartMirrorApp {
+  constructor(components) {
+    this.components = components;
+    this.state = {
+      clock: new Date(),
+      selectionArmed: false,
+      selectedIndex: 0,
+      openComponentId: null,
+      gestureLog: []
+    };
+
+    this.rails = {
+      top: document.getElementById('topRail'),
+      left: document.getElementById('leftRail'),
+      right: document.getElementById('rightRail'),
+      bottom: document.getElementById('bottomRail')
+    };
+
     this.clockTime = document.getElementById('clockTime');
     this.clockDate = document.getElementById('clockDate');
-    this.idleOverlay = document.getElementById('idleOverlay');
-    this.idleClock = document.getElementById('idleClock');
-    this.idleDate = document.getElementById('idleDate');
-    this.cameraElement = document.getElementById('mirrorCamera');
-    this.cameraStatus = document.getElementById('cameraStatus');
-    this.reflectionZone = document.querySelector('.reflection-zone');
+    this.gestureLabel = document.getElementById('gestureLabel');
+    this.selectedLabel = document.getElementById('selectedLabel');
+    this.gestureLog = document.getElementById('gestureLog');
+    this.detailTitle = document.getElementById('detailTitle');
+    this.detailHint = document.getElementById('detailHint');
+    this.detailContent = document.getElementById('detailContent');
 
-    this.tabButtons = Array.from(document.querySelectorAll('.action-btn'));
-    this.panelCards = Array.from(document.querySelectorAll('.grid-card'));
-
-    this.appointmentList = new AppointmentList(document.getElementById('upcomingAppointments'));
-    this.previewController = new PreviewController(document.getElementById('previewSection'));
-    this.formulaController = new FormulaController(document.getElementById('colorSettings'), (patch, forceApply) => {
-      const current = this.store.getState().colorSettings;
-      this.store.setState({ colorSettings: { ...current, ...patch } });
-      if (forceApply) this.flashGesture('Preview applied');
-    });
-
-    this.panelManager = new PanelManager(this.panelCards, this.tabButtons);
-    this.cameraController = new CameraController(this.cameraElement, this.cameraStatus, this.reflectionZone);
-    this.focusables = [];
-  }
-
-  mount() {
-    this.tabButtons.forEach((button) => {
-      button.addEventListener('click', () => {
-        this.store.setState({ selectedTab: button.dataset.tab });
-      });
-    });
-
-    this.store.subscribe((state) => this.render(state));
-    this.startClock();
-  }
-
-  startCamera() {
-    this.cameraController.start();
-  }
-
-  render(state) {
-    const client = state.currentClient;
-    this.clientRoot.innerHTML = `
-      <p class="welcome">Welcome back, ${client.preferredName}</p>
-      <div class="client-header">
-        <div class="avatar">${client.preferredName[0]}</div>
-        <div>
-          <h2 class="client-name">${client.name}</h2>
-          <p class="muted" style="margin:2px 0 0;">${client.loyaltyLevel}</p>
-        </div>
-      </div>
-      <ul class="meta-list">
-        <li><strong>Last Visit:</strong> ${this.formatDate(client.lastVisit)}</li>
-        <li><strong>Preferred Style:</strong> ${client.preferredStyle}</li>
-        <li><strong>Stylist:</strong> ${client.stylist}</li>
-        <li><strong>Allergies:</strong> ${client.allergies}</li>
-        <li><strong>Notes:</strong> ${client.notes}</li>
-      </ul>
-    `;
-
-    this.serviceRoot.innerHTML = `
-      <h2 class="panel-title">Today's Service</h2>
-      <article class="service-box">
-        <p style="margin:0 0 8px;font-size:1.03rem;font-weight:700;">${client.currentService.name}</p>
-        <p style="margin:0 0 8px;"><span class="badge in-progress">${client.currentService.status}</span></p>
-        <p class="muted" style="margin:0 0 5px;">Duration: ${client.currentService.duration}</p>
-        <p class="muted" style="margin:0 0 5px;">Current Step: ${client.currentService.step}</p>
-        <p class="muted" style="margin:0;">Stylist: ${client.stylist}</p>
-      </article>
-    `;
-
-    this.productRoot.innerHTML = state.products
-      .map(
-        (product) => `
-      <article class="product-card" data-focusable="true" tabindex="0">
-        <img class="product-thumb" src="${product.image}" alt="${product.name}" />
-        <div>
-          <p style="margin:0;font-weight:700;">${product.name}</p>
-          <p class="muted" style="margin:0;font-size:.83rem;">${product.category} • ${product.useType}</p>
-        </div>
-      </article>
-    `
-      )
-      .join('');
-
-    this.appointmentList.render(state.upcomingAppointments);
-    this.formulaController.render(client.formula, state.colorSettings, state.processingRemainingSeconds);
-    this.previewController.render(client.beforeImage, client.previewImage, state.previewZoom);
-
-    this.panelManager.setActive(state.selectedTab);
-    this.quickActions.classList.toggle('open', state.quickActionsOpen);
-    this.quickActions.setAttribute('aria-hidden', String(!state.quickActionsOpen));
-
-    this.idleOverlay.classList.toggle('hidden', !state.attractMode);
-
-    this.refreshFocusables(state.focusedIndex);
-  }
-
-  refreshFocusables(index = 0) {
-    this.focusables = Array.from(document.querySelectorAll('[data-focusable="true"]'));
-    this.focusables.forEach((element) => element.classList.remove('focused'));
-    const target = this.focusables[index % this.focusables.length];
-    if (target) {
-      target.classList.add('focused');
-      target.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-    }
-  }
-
-  focusNext(step) {
-    const state = this.store.getState();
-    if (!this.focusables.length) return;
-    const next = (state.focusedIndex + step + this.focusables.length) % this.focusables.length;
-    this.store.setState({ focusedIndex: next });
-  }
-
-  setGestureLabel(text) {
-    this.gestureLabel.textContent = `Gesture: ${text}`;
-  }
-
-  setDwellProgress(progress) {
-    const circumference = 126;
-    this.dwellRing.style.strokeDashoffset = String(circumference - circumference * progress);
-    this.dwellText.textContent = progress >= 1 ? 'Selected' : `Hold to select ${(progress * 100).toFixed(0)}%`;
-  }
-
-  resetDwell() {
-    this.dwellRing.style.strokeDashoffset = '126';
-    this.dwellText.textContent = 'Hold to select';
-  }
-
-  scrollActivePanel(direction) {
-    const selected = this.store.getState().selectedTab;
-    if (selected === 'appointments') {
-      this.appointmentList.scroll(direction);
-      return;
-    }
-    const activePanel = document.querySelector(`.grid-card[data-panel="${selected}"]`) || document.querySelector('.grid-card.active-panel');
-    if (activePanel) activePanel.scrollBy({ top: direction === 'up' ? -120 : 120, behavior: 'smooth' });
-  }
-
-  flashGesture(message) {
-    this.setGestureLabel(message);
-    setTimeout(() => this.setGestureLabel('idle'), 1200);
-  }
-
-  startClock() {
-    const update = () => {
-      const now = new Date();
-      const timeText = now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
-      const dateText = now.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' });
-      this.clockTime.textContent = timeText;
-      this.clockDate.textContent = dateText;
-      this.idleClock.textContent = timeText;
-      this.idleDate.textContent = dateText;
-    };
-    update();
-    setInterval(update, 1000);
-  }
-
-  formatDate(value) {
-    return new Date(`${value}T12:00:00`).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' });
-  }
-}
-
-class App {
-  constructor(data) {
-    this.store = new StateStore(data);
-    this.ui = new SalonMirrorUI(this.store);
-    this.gestureController = new GestureController([
-      new MockGestureProvider(),
-      new KeyboardGestureFallback(),
-      new VisionGestureProvider()
-    ]);
-    this.inactivityMs = 45000;
-    this.processingInterval = null;
+    this.gestureController = new GestureController([new KeyboardGestureFallback(), new VisionGestureProvider()]);
   }
 
   start() {
-    this.ui.mount();
-    this.ui.startCamera();
+    this.render();
     this.gestureController.onGesture((gesture) => this.handleGesture(gesture));
     this.gestureController.start();
-    this.bindQuickActionButtons();
-    this.bindPointerWake();
-    this.startProcessingTimer();
-    this.startInactivityWatcher();
+    this.startClock();
+  }
+
+  startClock() {
+    const tick = () => {
+      this.state.clock = new Date();
+      this.renderClock();
+    };
+
+    tick();
+    setInterval(tick, 1000);
+  }
+
+  renderClock() {
+    const now = this.state.clock;
+    this.clockTime.textContent = now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+    this.clockDate.textContent = now.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' });
+  }
+
+  render() {
+    this.renderClock();
+    this.renderRails();
+    this.renderDetailPanel();
+    this.renderStatus();
+    this.renderGestureLog();
+  }
+
+  renderRails() {
+    this.rails.top.innerHTML = this.renderCardsForZone('top');
+    this.rails.left.innerHTML = this.renderCardsForZone('left');
+    this.rails.right.innerHTML = this.renderCardsForZone('right');
+    this.rails.bottom.innerHTML = this.renderCardsForZone('bottom');
+
+    Object.values(this.rails).forEach((rail) => {
+      rail.querySelectorAll('.component-card').forEach((card) => {
+        card.addEventListener('click', () => {
+          const id = card.dataset.id;
+          const idx = this.components.findIndex((item) => item.id === id);
+          if (idx < 0) return;
+          this.state.selectionArmed = true;
+          this.state.selectedIndex = idx;
+          this.state.openComponentId = id;
+          this.logGesture(`mouse open: ${this.components[idx].title}`);
+          this.render();
+        });
+      });
+    });
+  }
+
+  renderCardsForZone(zone) {
+    return this.components
+      .filter((component) => component.zone === zone)
+      .map((component) => this.renderCard(component))
+      .join('');
+  }
+
+  renderCard(component) {
+    const selectedComponent = this.getSelectedComponent();
+    const isSelected = this.state.selectionArmed && selectedComponent.id === component.id;
+    const isOpen = this.state.openComponentId === component.id;
+    const selectedClass = isSelected ? 'is-selected' : '';
+    const openClass = isOpen ? 'is-open' : '';
+
+    return `
+      <article
+        class="component-card ${selectedClass} ${openClass}"
+        data-id="${component.id}"
+        style="--component-accent:${component.accent}"
+      >
+        <p class="component-kicker">${component.zone.toUpperCase()}</p>
+        <h3>${component.title}</h3>
+        <p class="component-summary">${component.summary}</p>
+      </article>
+    `;
+  }
+
+  renderStatus() {
+    const selected = this.getSelectedComponent();
+    this.selectedLabel.textContent = this.state.selectionArmed ? `Selected: ${selected.title}` : 'Selected: none';
+  }
+
+  renderDetailPanel() {
+    const selected = this.getSelectedComponent();
+
+    if (!this.state.openComponentId) {
+      this.detailTitle.textContent = this.state.selectionArmed ? selected.title : 'No component open';
+      this.detailHint.textContent = this.state.selectionArmed
+        ? 'Make a fist to open this component.'
+        : 'Raise palm to arm selection. Swipe to choose. Make a fist to open.';
+      this.detailContent.innerHTML = '<p class="detail-empty">Waiting for gesture selection...</p>';
+      return;
+    }
+
+    const item = this.components.find((component) => component.id === this.state.openComponentId);
+    if (!item) return;
+
+    this.detailTitle.textContent = `${item.title} Detail`;
+    this.detailHint.textContent = 'Component expanded. Swipe to switch target, then fist to open another.';
+
+    if (item.detailType === 'menu') {
+      this.detailContent.innerHTML = `
+        <ul class="detail-menu">
+          ${item.details.map((entry) => `<li>${entry}</li>`).join('')}
+        </ul>
+      `;
+      return;
+    }
+
+    if (item.detailType === 'facts') {
+      this.detailContent.innerHTML = `
+        <dl class="detail-facts">
+          ${item.details.map(([label, value]) => `<div><dt>${label}</dt><dd>${value}</dd></div>`).join('')}
+        </dl>
+      `;
+      return;
+    }
+
+    if (item.detailType === 'gallery') {
+      this.detailContent.innerHTML = `
+        <div class="detail-gallery">
+          ${item.details.map((url, index) => `<img src="${url}" alt="Preview sample ${index + 1}" />`).join('')}
+        </div>
+      `;
+      return;
+    }
+
+    this.detailContent.innerHTML = '<p class="detail-empty">No content available.</p>';
+  }
+
+  renderGestureLog() {
+    if (!this.state.gestureLog.length) {
+      this.gestureLog.innerHTML = '<p class="log-empty">No gestures yet.</p>';
+      return;
+    }
+
+    this.gestureLog.innerHTML = this.state.gestureLog
+      .slice(-6)
+      .reverse()
+      .map((entry) => `<p class="log-entry">${entry}</p>`)
+      .join('');
   }
 
   handleGesture(gesture) {
-    const state = this.store.getState();
+    const type = this.normalizeGestureType(gesture.type);
+    const source = gesture.source || 'unknown';
+    this.gestureLabel.textContent = `Gesture: ${type} (${source})`;
 
-    if (state.attractMode) {
-      this.store.setState({ attractMode: false });
-      this.ui.setGestureLabel('session restored');
-    }
-
-    this.ui.setGestureLabel(`${gesture.type} (${gesture.source})`);
-
-    switch (gesture.type) {
-      case 'swipeLeft': {
-        const nextTab = this.ui.panelManager.next(state.selectedTab, 'left');
-        this.store.setState({ selectedTab: nextTab });
-        this.ui.focusNext(1);
+    switch (type) {
+      case 'palmUp':
+        this.state.selectionArmed = true;
+        this.state.openComponentId = null;
+        this.logGesture('palm up: selection armed');
         break;
-      }
-      case 'swipeRight': {
-        const nextTab = this.ui.panelManager.next(state.selectedTab, 'right');
-        this.store.setState({ selectedTab: nextTab });
-        this.ui.focusNext(-1);
+      case 'swipeLeft':
+        this.moveSelection(1);
+        this.logGesture('swipe left: next component');
         break;
-      }
-      case 'swipeUp':
-        this.ui.scrollActivePanel('up');
+      case 'swipeRight':
+        this.moveSelection(-1);
+        this.logGesture('swipe right: previous component');
         break;
-      case 'swipeDown':
-        this.ui.scrollActivePanel('down');
-        break;
-      case 'openPalm':
-        this.store.setState({ quickActionsOpen: !state.quickActionsOpen });
-        break;
-      case 'zoomIn':
-        this.adjustZoom(0.08);
-        break;
-      case 'zoomOut':
-        this.adjustZoom(-0.08);
-        break;
-      case 'dwellSelect':
-        this.performDwellSelection();
+      case 'fist':
+        this.openSelectedComponent();
         break;
       default:
+        this.logGesture(`${type}: ignored`);
         break;
     }
+
+    this.render();
   }
 
-  performDwellSelection() {
-    const { focusedIndex } = this.store.getState();
-    this.gestureController.beginDwell(
-      focusedIndex,
-      (progress) => this.ui.setDwellProgress(progress),
-      () => {
-        const target = this.ui.focusables[focusedIndex];
-        if (target) target.click();
-        this.ui.flashGesture('item selected');
-        this.ui.resetDwell();
-      }
-    );
+  normalizeGestureType(type) {
+    const map = {
+      Open_Palm: 'palmUp',
+      openPalm: 'palmUp',
+      palmUp: 'palmUp',
+      swipeLeft: 'swipeLeft',
+      swipeRight: 'swipeRight',
+      Closed_Fist: 'fist',
+      closedFist: 'fist',
+      fist: 'fist',
+      dwellSelect: 'fist'
+    };
+
+    return map[type] || type;
   }
 
-  adjustZoom(delta) {
-    const state = this.store.getState();
-    const nextZoom = Math.min(1.7, Math.max(0.8, Number((state.previewZoom + delta).toFixed(2))));
-    this.store.setState({ previewZoom: nextZoom, selectedTab: 'preview' });
+  moveSelection(delta) {
+    if (!this.state.selectionArmed) {
+      this.logGesture('swipe ignored: raise palm first');
+      return;
+    }
+
+    this.state.selectedIndex = (this.state.selectedIndex + delta + this.components.length) % this.components.length;
   }
 
-  bindPointerWake() {
-    ['mousemove', 'mousedown', 'touchstart'].forEach((eventName) => {
-      window.addEventListener(eventName, () => {
-        const state = this.store.getState();
-        if (state.attractMode) this.store.setState({ attractMode: false });
-        else this.store.setState({});
-      });
-    });
+  openSelectedComponent() {
+    if (!this.state.selectionArmed) {
+      this.logGesture('fist ignored: selection not armed');
+      return;
+    }
+
+    const selected = this.getSelectedComponent();
+
+    if (this.state.openComponentId === selected.id) {
+      this.state.openComponentId = null;
+      this.logGesture(`fist: closed ${selected.title}`);
+      return;
+    }
+
+    this.state.openComponentId = selected.id;
+    this.logGesture(`fist: opened ${selected.title}`);
   }
 
-  bindQuickActionButtons() {
-    const actions = Array.from(document.querySelectorAll('.quick-btn'));
-    actions.forEach((button) => {
-      button.addEventListener('click', () => {
-        const label = button.textContent.trim();
-        if (label === 'Start Processing Timer') {
-          const minutes = this.store.getState().colorSettings.processingTime;
-          this.store.setState({ processingRemainingSeconds: minutes * 60, quickActionsOpen: false });
-        } else {
-          this.store.setState({ quickActionsOpen: false });
-        }
-        this.ui.flashGesture(label);
-      });
-    });
+  getSelectedComponent() {
+    return this.components[this.state.selectedIndex] || this.components[0];
   }
 
-  startInactivityWatcher() {
-    setInterval(() => {
-      const state = this.store.getState();
-      if (!state.attractMode && Date.now() - state.lastInteractionAt > this.inactivityMs) {
-        this.store.setState({ attractMode: true, quickActionsOpen: false });
-      }
-    }, 2000);
-  }
-
-  startProcessingTimer() {
-    this.processingInterval = setInterval(() => {
-      const { processingRemainingSeconds } = this.store.getState();
-      if (processingRemainingSeconds <= 0) return;
-      this.store.setState({ processingRemainingSeconds: processingRemainingSeconds - 1 });
-    }, 1000);
+  logGesture(message) {
+    const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    this.state.gestureLog.push(`${time} - ${message}`);
+    if (this.state.gestureLog.length > 32) this.state.gestureLog.shift();
   }
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-  const app = new App(mockData);
+  const app = new SmartMirrorApp(componentData);
   app.start();
 });
