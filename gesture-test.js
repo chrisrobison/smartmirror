@@ -1,4 +1,10 @@
-import { FilesetResolver, GestureRecognizer, DrawingUtils } from 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.22';
+import {
+  FilesetResolver,
+  GestureRecognizer,
+  DrawingUtils
+} from 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.34/vision_bundle.mjs';
+
+const MEDIAPIPE_TASKS_VISION_VERSION = '0.10.34';
 
 const GESTURE_MODEL_URL =
   'https://storage.googleapis.com/mediapipe-models/gesture_recognizer/gesture_recognizer/float16/1/gesture_recognizer.task';
@@ -249,7 +255,9 @@ async function createRecognizer() {
 
   setStatus('Loading MediaPipe models...');
 
-  const vision = await FilesetResolver.forVisionTasks('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.22/wasm');
+  const vision = await FilesetResolver.forVisionTasks(
+    `https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@${MEDIAPIPE_TASKS_VISION_VERSION}/wasm`
+  );
   recognizer = await GestureRecognizer.createFromOptions(vision, {
     baseOptions: {
       modelAssetPath: GESTURE_MODEL_URL,
