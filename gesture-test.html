@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SmartMirror Gesture Test</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="gesture-test.css" />
+  </head>
+  <body>
+    <main class="gesture-lab">
+      <header class="topbar panel">
+        <div>
+          <p class="eyebrow">SmartMirror</p>
+          <h1>Gesture Diagnostics Lab</h1>
+          <p class="subtitle">Live camera canvas + hand landmarks + recognized gesture event feed</p>
+        </div>
+        <a class="back-link" href="index.html">Back to Mirror UI</a>
+      </header>
+
+      <section class="controls panel" aria-label="Camera controls">
+        <button id="startCameraBtn" class="btn primary">Start Camera</button>
+        <button id="stopCameraBtn" class="btn" disabled>Stop Camera</button>
+        <button id="clearLogBtn" class="btn ghost">Clear Log</button>
+        <div id="statusPill" class="status">Idle</div>
+      </section>
+
+      <section class="workspace">
+        <article class="panel camera-panel">
+          <canvas id="cameraCanvas" aria-label="Camera view with landmarks"></canvas>
+          <video id="cameraFeed" autoplay playsinline muted></video>
+        </article>
+
+        <aside class="side-column">
+          <article class="panel hand-panel">
+            <h2>Hands</h2>
+            <div id="handSummary" class="hand-summary">No hands detected yet.</div>
+          </article>
+
+          <article class="panel log-panel">
+            <h2>Gesture Log</h2>
+            <div id="gestureLog" class="gesture-log" role="log" aria-live="polite"></div>
+          </article>
+        </aside>
+      </section>
+    </main>
+
+    <script type="module" src="gesture-test.js"></script>
+  </body>
+</html>
