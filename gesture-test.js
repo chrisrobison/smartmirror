@@ -44,10 +44,13 @@ const NAVIGATION_HINTS = {
   swipeRight: 'previous component'
 };
 
-const SWIPE_WINDOW_MS = 520;
-const SWIPE_MIN_DISTANCE = 0.18;
-const SWIPE_MAX_VERTICAL_DRIFT = 0.14;
-const SWIPE_MIN_VELOCITY = 0.55;
+const IGNORED_STATIC_GESTURES = new Set(['None']);
+
+const SWIPE_WINDOW_MS = 760;
+const SWIPE_MIN_DISTANCE = 0.1;
+const SWIPE_MIN_SAMPLE_AGE_MS = 120;
+const SWIPE_MAX_VERTICAL_DRIFT = 0.2;
+const SWIPE_MIN_VELOCITY = 0.22;
 const SWIPE_COOLDOWN_MS = 850;
 
 const video = document.getElementById('cameraFeed');
@@ -208,6 +211,7 @@ function logRecognizedGestures(results, frameTimeMs) {
 
     const topGesture = gestureList[0];
     if (topGesture.score < 0.55) return;
+    if (IGNORED_STATIC_GESTURES.has(topGesture.categoryName)) return;
 
     const hand = results.handedness[index]?.[0]?.displayName || `Hand ${index + 1}`;
     seenHands.add(hand);
@@ -237,6 +241,10 @@ function getHandId(results, index) {
   return results.handedness[index]?.[0]?.displayName || `Hand ${index + 1}`;
 }
 
+function getMotionId(index) {
+  return `hand-${index}`;
+}
+
 function updateSwipeRecognition(results, frameTimeMs) {
   const seenHands = new Set();
 
@@ -247,6 +255,7 @@ function updateSwipeRecognition(results, frameTimeMs) {
 
   results.landmarks.forEach((landmarks, index) => {
     const hand = getHandId(results, index);
+    const motionId = getMotionId(index);
     const info = computeHandInfo(landmarks);
     const displayedCenterX = 1 - info.centerX;
     const point = {
@@ -255,19 +264,21 @@ function updateSwipeRecognition(results, frameTimeMs) {
       time: frameTimeMs
     };
 
-    seenHands.add(hand);
+    seenHands.add(motionId);
 
     const state =
-      motionStateByHand.get(hand) ||
+      motionStateByHand.get(motionId) ||
       {
         samples: [],
         lastSwipeAt: Number.NEGATIVE_INFINITY
       };
 
+    state.hand = hand;
     state.samples.push(point);
     state.samples = state.samples.filter((sample) => frameTimeMs - sample.time <= SWIPE_WINDOW_MS);
 
-    const first = state.samples[0];
+    const first =
+      state.samples.find((sample) => frameTimeMs - sample.time >= SWIPE_MIN_SAMPLE_AGE_MS) || state.samples[0];
     const dx = point.x - first.x;
     const dy = point.y - first.y;
     const elapsedSeconds = Math.max((point.time - first.time) / 1000, 0.001);
@@ -284,17 +295,17 @@ function updateSwipeRecognition(results, frameTimeMs) {
       const navHint = NAVIGATION_HINTS[gestureName];
       const hintSuffix = navHint ? ` -> ${navHint}` : '';
 
-      appendLog(`${hand}: <strong>${gestureName}</strong>${hintSuffix}`);
+      appendLog(`${state.hand}: <strong>${gestureName}</strong>${hintSuffix}`);
 
       state.lastSwipeAt = frameTimeMs;
       state.samples = [point];
     }
 
-    motionStateByHand.set(hand, state);
+    motionStateByHand.set(motionId, state);
   });
 
-  for (const hand of Array.from(motionStateByHand.keys())) {
-    if (!seenHands.has(hand)) motionStateByHand.delete(hand);
+  for (const motionId of Array.from(motionStateByHand.keys())) {
+    if (!seenHands.has(motionId)) motionStateByHand.delete(motionId);
   }
 }
 
