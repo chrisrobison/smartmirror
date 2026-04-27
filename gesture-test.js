@@ -39,8 +39,16 @@ const NAVIGATION_HINTS = {
   Pointing_Up: 'focus next',
   Victory: 'move tab right',
   Thumb_Up: 'zoom in',
-  Thumb_Down: 'zoom out'
+  Thumb_Down: 'zoom out',
+  swipeLeft: 'next component',
+  swipeRight: 'previous component'
 };
+
+const SWIPE_WINDOW_MS = 520;
+const SWIPE_MIN_DISTANCE = 0.18;
+const SWIPE_MAX_VERTICAL_DRIFT = 0.14;
+const SWIPE_MIN_VELOCITY = 0.55;
+const SWIPE_COOLDOWN_MS = 850;
 
 const video = document.getElementById('cameraFeed');
 const canvas = document.getElementById('cameraCanvas');
@@ -59,6 +67,7 @@ let animationFrame;
 let cameraStream;
 let running = false;
 let lastLogStateByHand = new Map();
+let motionStateByHand = new Map();
 let lastVideoTime = -1;
 
 function setStatus(message, level = '') {
@@ -224,6 +233,71 @@ function logRecognizedGestures(results, frameTimeMs) {
   }
 }
 
+function getHandId(results, index) {
+  return results.handedness[index]?.[0]?.displayName || `Hand ${index + 1}`;
+}
+
+function updateSwipeRecognition(results, frameTimeMs) {
+  const seenHands = new Set();
+
+  if (!results.landmarks || !results.landmarks.length) {
+    motionStateByHand.clear();
+    return;
+  }
+
+  results.landmarks.forEach((landmarks, index) => {
+    const hand = getHandId(results, index);
+    const info = computeHandInfo(landmarks);
+    const displayedCenterX = 1 - info.centerX;
+    const point = {
+      x: displayedCenterX,
+      y: info.centerY,
+      time: frameTimeMs
+    };
+
+    seenHands.add(hand);
+
+    const state =
+      motionStateByHand.get(hand) ||
+      {
+        samples: [],
+        lastSwipeAt: Number.NEGATIVE_INFINITY
+      };
+
+    state.samples.push(point);
+    state.samples = state.samples.filter((sample) => frameTimeMs - sample.time <= SWIPE_WINDOW_MS);
+
+    const first = state.samples[0];
+    const dx = point.x - first.x;
+    const dy = point.y - first.y;
+    const elapsedSeconds = Math.max((point.time - first.time) / 1000, 0.001);
+    const velocity = Math.abs(dx) / elapsedSeconds;
+    const canSwipe = frameTimeMs - state.lastSwipeAt >= SWIPE_COOLDOWN_MS;
+
+    if (
+      canSwipe &&
+      Math.abs(dx) >= SWIPE_MIN_DISTANCE &&
+      Math.abs(dy) <= SWIPE_MAX_VERTICAL_DRIFT &&
+      velocity >= SWIPE_MIN_VELOCITY
+    ) {
+      const gestureName = dx < 0 ? 'swipeLeft' : 'swipeRight';
+      const navHint = NAVIGATION_HINTS[gestureName];
+      const hintSuffix = navHint ? ` -> ${navHint}` : '';
+
+      appendLog(`${hand}: <strong>${gestureName}</strong>${hintSuffix}`);
+
+      state.lastSwipeAt = frameTimeMs;
+      state.samples = [point];
+    }
+
+    motionStateByHand.set(hand, state);
+  });
+
+  for (const hand of Array.from(motionStateByHand.keys())) {
+    if (!seenHands.has(hand)) motionStateByHand.delete(hand);
+  }
+}
+
 function renderFrame(nowMs) {
   if (!running) return;
 
@@ -244,6 +318,7 @@ function renderFrame(nowMs) {
 
       renderHandSummary(results);
       logRecognizedGestures(results, nowMs);
+      updateSwipeRecognition(results, nowMs);
     }
   }
 
@@ -318,6 +393,7 @@ function stopCamera() {
   video.srcObject = null;
   lastVideoTime = -1;
   lastLogStateByHand.clear();
+  motionStateByHand.clear();
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   handSummary.textContent = 'No hands detected yet.';
