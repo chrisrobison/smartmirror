@@ -3,92 +3,80 @@
 const componentData = [
   {
     id: 'client-profile',
-    zone: 'top',
     title: 'Client Profile',
-    summary: 'Allergies, target look, and visit notes.',
-    accent: '#63d8ff',
     detailType: 'facts',
     details: [
-      ['Client', 'Isabella Marquez'],
-      ['Look', 'Soft dimensional balayage + curtain layers'],
-      ['Allergy', 'Ammonia sensitivity'],
-      ['Stylist', 'Camille R.']
+      ['Client', 'Sarah Mitchell'],
+      ['Loyalty', 'Gold Member'],
+      ['Last Visit', '5 Weeks Ago'],
+      ['Preference', 'Warm balayage']
     ]
   },
   {
     id: 'appointments',
-    zone: 'top',
-    title: 'Appointments',
-    summary: 'Timeline for the next 3 guests.',
-    accent: '#a8c0ff',
+    title: 'Upcoming Appointments',
     detailType: 'menu',
-    details: ['3:15 PM Natalie Kim - Root Melt + Tone', '4:00 PM Jules Parker - Precision Bob', '4:45 PM Maya Patel - Gloss + Blowout']
+    details: ['12:00 PM Jessica T. - Cut & Style', '1:30 PM Mark S. - Color Touch-Up', '3:00 PM Emily W. - Highlights']
+  },
+  {
+    id: 'services-today',
+    title: 'Services Today',
+    detailType: 'facts',
+    details: [
+      ['Service', 'Balayage & Trim'],
+      ['Stylist', 'Amanda'],
+      ['Status', 'Color consultation']
+    ]
+  },
+  {
+    id: 'products-used',
+    title: 'Products Used',
+    detailType: 'menu',
+    details: ['Color Protect Shampoo', 'Argan Oil Serum', 'Volumizing Spray']
   },
   {
     id: 'formula-board',
-    zone: 'left',
-    title: 'Formula Board',
-    summary: 'Current mix and process controls.',
-    accent: '#6bf0b6',
+    title: 'Hair Color Settings',
     detailType: 'menu',
-    details: ['Adjust tone slider', 'Adjust warmth slider', 'Restart processing timer', 'Save formula snapshot']
+    details: ['Golden Blonde', '7G + 8G (30 Vol)', 'Tone slider: 54%', 'Warmth slider: 70%']
   },
   {
-    id: 'processing-timer',
-    zone: 'left',
-    title: 'Processing Timer',
-    summary: 'Remaining: 31m',
-    accent: '#f2c46d',
+    id: 'before',
+    title: 'Before',
     detailType: 'facts',
     details: [
-      ['Target', '32 minutes'],
-      ['Remaining', '31 minutes'],
-      ['Developer', '20 vol']
+      ['Base', 'Level 7 blonde'],
+      ['Condition', 'Healthy ends'],
+      ['Goal', 'Warmer dimension']
     ]
   },
   {
-    id: 'preview-gallery',
-    zone: 'right',
-    title: 'Preview Gallery',
-    summary: 'Before vs predicted finish.',
-    accent: '#ffb08e',
-    detailType: 'gallery',
-    details: [
-      'https://images.unsplash.com/photo-1522336284037-91f7da073525?auto=format&fit=crop&w=900&q=80',
-      'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?auto=format&fit=crop&w=900&q=80',
-      'https://images.unsplash.com/photo-1519699047748-de8e457a634e?auto=format&fit=crop&w=900&q=80'
-    ]
-  },
-  {
-    id: 'retail-reco',
-    zone: 'right',
-    title: 'Retail Reco',
-    summary: 'Products likely to convert post-service.',
-    accent: '#f199ff',
-    detailType: 'menu',
-    details: ['LumiTone Color Shield', 'Keratine Velvet Mask', 'SilkMist Heat Veil']
-  },
-  {
-    id: 'quick-actions',
-    zone: 'bottom',
-    title: 'Quick Actions',
-    summary: 'Hands-free macros for salon flow.',
-    accent: '#86ffe2',
-    detailType: 'menu',
-    details: ['Notify front desk', 'Mark paint section complete', 'Add rinse reminder', 'Flag client check-out prep']
-  },
-  {
-    id: 'notes',
-    zone: 'bottom',
-    title: 'Session Notes',
-    summary: 'Voice-ready notes and reminders.',
-    accent: '#82abff',
+    id: 'live-preview',
+    title: 'Live Preview',
     detailType: 'facts',
     details: [
-      ['Reminder', 'Client requests cooler finish in front frame'],
-      ['Inventory', 'Low stock: 8A toner'],
-      ['Follow-up', 'Book 8-week gloss refresh']
+      ['Tone', 'Golden blonde'],
+      ['Depth', 'Dimensional'],
+      ['Finish', 'Soft gloss']
     ]
+  },
+  {
+    id: 'style-gallery',
+    title: 'Style Gallery',
+    detailType: 'menu',
+    details: ['Long layers', 'Face frame', 'Soft waves', 'Dimensional blonde']
+  },
+  {
+    id: 'retail-products',
+    title: 'Retail Products',
+    detailType: 'menu',
+    details: ['Color Protect Shampoo', 'Argan Oil Serum', 'Volumizing Spray']
+  },
+  {
+    id: 'salon-tips',
+    title: 'Salon Tips',
+    detailType: 'menu',
+    details: ['Use sulfate-free care', 'Refresh gloss in 8 weeks', 'Protect tone from heat']
   }
 ];
 
@@ -166,13 +154,6 @@ class SmartMirrorApp {
       gestureLog: []
     };
 
-    this.rails = {
-      top: document.getElementById('topRail'),
-      left: document.getElementById('leftRail'),
-      right: document.getElementById('rightRail'),
-      bottom: document.getElementById('bottomRail')
-    };
-
     this.clockTime = document.getElementById('clockTime');
     this.clockDate = document.getElementById('clockDate');
     this.gestureLabel = document.getElementById('gestureLabel');
@@ -187,9 +168,25 @@ class SmartMirrorApp {
 
   start() {
     this.render();
+    this.bindComponentClicks();
     this.gestureController.onGesture((gesture) => this.handleGesture(gesture));
     this.gestureController.start();
     this.startClock();
+  }
+
+  bindComponentClicks() {
+    document.querySelectorAll('.component-card[data-id]').forEach((card) => {
+      card.addEventListener('click', () => {
+        const idx = this.components.findIndex((item) => item.id === card.dataset.id);
+        if (idx < 0) return;
+
+        this.state.selectionArmed = true;
+        this.state.selectedIndex = idx;
+        this.state.openComponentId = card.dataset.id;
+        this.logGesture(`mouse open: ${this.components[idx].title}`);
+        this.render();
+      });
+    });
   }
 
   startClock() {
@@ -210,59 +207,19 @@ class SmartMirrorApp {
 
   render() {
     this.renderClock();
-    this.renderRails();
     this.renderDetailPanel();
     this.renderStatus();
     this.renderGestureLog();
+    this.renderComponentStates();
   }
 
-  renderRails() {
-    this.rails.top.innerHTML = this.renderCardsForZone('top');
-    this.rails.left.innerHTML = this.renderCardsForZone('left');
-    this.rails.right.innerHTML = this.renderCardsForZone('right');
-    this.rails.bottom.innerHTML = this.renderCardsForZone('bottom');
-
-    Object.values(this.rails).forEach((rail) => {
-      rail.querySelectorAll('.component-card').forEach((card) => {
-        card.addEventListener('click', () => {
-          const id = card.dataset.id;
-          const idx = this.components.findIndex((item) => item.id === id);
-          if (idx < 0) return;
-          this.state.selectionArmed = true;
-          this.state.selectedIndex = idx;
-          this.state.openComponentId = id;
-          this.logGesture(`mouse open: ${this.components[idx].title}`);
-          this.render();
-        });
-      });
-    });
-  }
-
-  renderCardsForZone(zone) {
-    return this.components
-      .filter((component) => component.zone === zone)
-      .map((component) => this.renderCard(component))
-      .join('');
-  }
-
-  renderCard(component) {
+  renderComponentStates() {
     const selectedComponent = this.getSelectedComponent();
-    const isSelected = this.state.selectionArmed && selectedComponent.id === component.id;
-    const isOpen = this.state.openComponentId === component.id;
-    const selectedClass = isSelected ? 'is-selected' : '';
-    const openClass = isOpen ? 'is-open' : '';
 
-    return `
-      <article
-        class="component-card ${selectedClass} ${openClass}"
-        data-id="${component.id}"
-        style="--component-accent:${component.accent}"
-      >
-        <p class="component-kicker">${component.zone.toUpperCase()}</p>
-        <h3>${component.title}</h3>
-        <p class="component-summary">${component.summary}</p>
-      </article>
-    `;
+    document.querySelectorAll('.component-card[data-id]').forEach((card) => {
+      card.classList.toggle('is-selected', this.state.selectionArmed && selectedComponent.id === card.dataset.id);
+      card.classList.toggle('is-open', this.state.openComponentId === card.dataset.id);
+    });
   }
 
   renderStatus() {
@@ -279,6 +236,7 @@ class SmartMirrorApp {
         ? 'Make a fist to open this component.'
         : 'Raise palm to arm selection. Swipe to choose. Make a fist to open.';
       this.detailContent.innerHTML = '<p class="detail-empty">Waiting for gesture selection...</p>';
+      this.detailTitle.parentElement.classList.remove('has-content');
       return;
     }
 
@@ -287,6 +245,7 @@ class SmartMirrorApp {
 
     this.detailTitle.textContent = `${item.title} Detail`;
     this.detailHint.textContent = 'Component expanded. Swipe to switch target, then fist to open another.';
+    this.detailTitle.parentElement.classList.add('has-content');
 
     if (item.detailType === 'menu') {
       this.detailContent.innerHTML = `
@@ -302,15 +261,6 @@ class SmartMirrorApp {
         <dl class="detail-facts">
           ${item.details.map(([label, value]) => `<div><dt>${label}</dt><dd>${value}</dd></div>`).join('')}
         </dl>
-      `;
-      return;
-    }
-
-    if (item.detailType === 'gallery') {
-      this.detailContent.innerHTML = `
-        <div class="detail-gallery">
-          ${item.details.map((url, index) => `<img src="${url}" alt="Preview sample ${index + 1}" />`).join('')}
-        </div>
       `;
       return;
     }

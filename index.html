@@ -3,63 +3,155 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>LuxeMirror Stylist Console</title>
+    <title>LuxeMirror Salon Mirror</title>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23090b10'/%3E%3Ctext x='50%25' y='58%25' text-anchor='middle' font-size='34' font-family='Arial' fill='%2357d1ff'%3ELS%3C/text%3E%3C/svg%3E" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <div id="app" class="mirror-app" aria-live="polite">
-      <header class="top-meta shell-panel">
-        <div>
-          <p class="brand-kicker">Luxe Strand Salon</p>
-          <h1 class="brand-title">Gesture Mirror Console</h1>
-          <p class="brand-sub">Center stays mirror-black. Use gestures around the edge UI.</p>
-        </div>
-        <div class="clock-wrap">
-          <p id="clockTime" class="clock-time">--:--</p>
-          <p id="clockDate" class="clock-date">Loading date...</p>
-        </div>
-      </header>
+      <main class="mirror-frame" aria-label="Salon smart mirror">
+        <section class="mirror-scene">
+          <div class="mirror-glass"></div>
 
-      <main class="mirror-shell">
-        <section id="topRail" class="rail rail-top" aria-label="Top components"></section>
+          <header class="welcome-panel">
+            <div class="welcome-copy">
+              <h1>Welcome, Sarah!</h1>
+              <p id="clockDate">Loading date...</p>
+            </div>
+            <div class="clock-wrap">
+              <p id="clockTime" class="clock-time">--:--</p>
+            </div>
+          </header>
 
-        <section class="center-band" aria-label="Mirror body layout">
-          <aside id="leftRail" class="rail rail-side" aria-label="Left components"></aside>
+          <section id="profilePanel" class="floating-panel profile-panel component-card" data-id="client-profile">
+            <div class="profile-head">
+              <img
+                src="https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=320&q=80"
+                alt="Sarah Mitchell"
+              />
+              <div>
+                <h2>Sarah Mitchell</h2>
+                <span>Client Profile</span>
+              </div>
+            </div>
+            <ul class="profile-facts">
+              <li><strong>Loyalty Level:</strong> Gold Member</li>
+              <li><strong>Last Visit:</strong> 5 Weeks Ago</li>
+              <li><strong>Preferred Style:</strong> Balayage</li>
+              <li><strong>Notes:</strong> Likes warm tones</li>
+            </ul>
+          </section>
 
-          <div class="mirror-core shell-panel" aria-label="Reflection zone">
-            <div class="mirror-blank"></div>
-            <p class="mirror-label">Reflection Zone</p>
-            <p class="mirror-note">No UI overlays here while client is seated.</p>
-          </div>
+          <section id="appointmentPanel" class="floating-panel appointments-panel component-card" data-id="appointments">
+            <h2>Upcoming Appointments</h2>
+            <div class="appointment-list">
+              <article>
+                <strong>12:00 PM - Jessica T.</strong>
+                <span>Cut &amp; Style</span>
+              </article>
+              <article>
+                <strong>1:30 PM - Mark S.</strong>
+                <span>Color Touch-Up</span>
+              </article>
+              <article>
+                <strong>3:00 PM - Emily W.</strong>
+                <span>Highlights</span>
+              </article>
+            </div>
+          </section>
 
-          <aside id="rightRail" class="rail rail-side" aria-label="Right components"></aside>
+          <section id="servicesPanel" class="floating-panel services-panel component-card" data-id="services-today">
+            <h2>Services Today</h2>
+            <p class="service-name">Balayage &amp; Trim</p>
+            <p>Stylist: Amanda</p>
+          </section>
+
+          <section id="productsPanel" class="floating-panel products-panel component-card" data-id="products-used">
+            <h2>Products Used</h2>
+            <div class="product-row">
+              <span class="product-icon shampoo"></span>
+              <strong>Color Protect Shampoo</strong>
+            </div>
+            <div class="product-row">
+              <span class="product-icon serum"></span>
+              <strong>Argan Oil Serum</strong>
+            </div>
+            <div class="product-row">
+              <span class="product-icon spray"></span>
+              <strong>Volumizing Spray</strong>
+            </div>
+          </section>
+
+          <section id="formulaPanel" class="floating-panel formula-panel component-card" data-id="formula-board">
+            <h2>Hair Color Settings</h2>
+            <p class="formula-label">Current Formula:</p>
+            <button type="button" class="formula-chip">Golden Blonde</button>
+            <p class="formula-mix">7G + 8G (30 Vol)</p>
+            <p class="formula-label">Tone Adjustments</p>
+            <div class="slider-row"><span style="--value: 54%"></span></div>
+            <div class="slider-row"><span style="--value: 70%"></span></div>
+            <h3>Color Samples</h3>
+            <div class="swatches">
+              <button type="button" class="swatch blonde"><span>Golden Blonde</span></button>
+              <button type="button" class="swatch caramel"><span>Caramel</span></button>
+              <button type="button" class="swatch copper"><span>Copper</span></button>
+              <button type="button" class="swatch brown"><span>Light Brown</span></button>
+            </div>
+          </section>
+
+          <section id="previewPanel" class="preview-panels" aria-label="Before and live preview">
+            <article class="preview-card component-card" data-id="before">
+              <h2>Before</h2>
+              <img
+                src="https://images.unsplash.com/photo-1519699047748-de8e457a634e?auto=format&fit=crop&w=640&q=80"
+                alt="Before hairstyle"
+              />
+            </article>
+            <article class="preview-card component-card" data-id="live-preview">
+              <h2>Live Preview</h2>
+              <img
+                src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=640&q=80"
+                alt="Live hairstyle preview"
+              />
+            </article>
+          </section>
+
+          <nav class="mirror-nav" aria-label="Mirror tools">
+            <button type="button" class="nav-item component-card" data-id="style-gallery">
+              <span class="nav-icon style"></span>
+              <strong>Style<br />Gallery</strong>
+            </button>
+            <button type="button" class="nav-item component-card" data-id="retail-products">
+              <span class="nav-icon retail"></span>
+              <strong>Retail<br />Products</strong>
+            </button>
+            <button type="button" class="nav-item component-card" data-id="salon-tips">
+              <span class="nav-icon tips"></span>
+              <strong>Salon<br />Tips</strong>
+            </button>
+          </nav>
+
+          <section id="detailPanel" class="detail-panel" aria-label="Selected component detail">
+            <h2 id="detailTitle">Mirror ready</h2>
+            <p id="detailHint">Raise palm to arm selection. Swipe to choose. Make a fist to open.</p>
+            <div id="detailContent" class="detail-content">
+              <p class="detail-empty">Waiting for gesture selection...</p>
+            </div>
+          </section>
+
+          <section class="gesture-footer" aria-label="Gesture feedback">
+            <div id="gestureLabel" class="gesture-label">Gesture: idle</div>
+            <div id="selectedLabel" class="selected-label">Selected: none</div>
+            <div id="gestureLog" class="gesture-log" role="log" aria-live="polite"></div>
+          </section>
         </section>
-
-        <section id="bottomRail" class="rail rail-bottom" aria-label="Bottom components"></section>
       </main>
-
-      <section id="detailPanel" class="detail-panel shell-panel" aria-label="Selected component detail">
-        <div class="detail-head">
-          <h2 id="detailTitle">No component open</h2>
-          <p id="detailHint">Raise palm to arm selection. Swipe to choose. Make a fist to open.</p>
-        </div>
-        <div id="detailContent" class="detail-content">
-          <p class="detail-empty">Waiting for gesture selection...</p>
-        </div>
-      </section>
-
-      <section class="gesture-footer shell-panel" aria-label="Gesture feedback">
-        <div id="gestureLabel" class="gesture-label">Gesture: idle</div>
-        <div id="selectedLabel" class="selected-label">Selected: none</div>
-        <div id="gestureLog" class="gesture-log" role="log" aria-live="polite"></div>
-      </section>
 
       <a class="gesture-test-link" href="gesture-test.html">Open Gesture Diagnostics</a>
     </div>
