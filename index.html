@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div id="app" class="mirror-app" aria-live="polite">
+    <div id="app" class="mirror-app" data-layout="mirror" aria-live="polite">
       <main class="mirror-frame" aria-label="Salon smart mirror">
         <section class="mirror-scene">
           <div class="mirror-glass"></div>
@@ -154,6 +154,13 @@
       </main>
 
       <a class="gesture-test-link" href="gesture-test.html">Open Gesture Diagnostics</a>
+
+      <div class="layout-switcher" aria-label="Switch layout">
+        <button class="ls-btn" data-target="mirror" title="Mirror view">⬜</button>
+        <button class="ls-btn" data-target="desktop" title="Desktop view">🖥</button>
+        <button class="ls-btn" data-target="tablet" title="Tablet view">⬛</button>
+        <button class="ls-btn" data-target="phone" title="Phone view">📱</button>
+      </div>
     </div>
 
     <script src="app.js"></script>

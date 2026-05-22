@@ -1,5 +1,41 @@
 'use strict';
 
+function detectLayout() {
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+  if (h / w >= 1.4 && w >= 800) return 'mirror';
+  if (w >= 1280) return 'desktop';
+  if (w >= 768) return 'tablet';
+  return 'phone';
+}
+
+function applyLayout(mode) {
+  const app = document.getElementById('app');
+  if (!app) return;
+  app.dataset.layout = mode;
+  document.querySelectorAll('.ls-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.target === mode);
+  });
+}
+
+let _layoutOverride = null;
+
+function initLayoutDetection() {
+  function update() {
+    if (!_layoutOverride) applyLayout(detectLayout());
+  }
+  update();
+  window.addEventListener('resize', update);
+
+  // Layout switcher buttons
+  document.querySelectorAll('.ls-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      _layoutOverride = btn.dataset.target;
+      applyLayout(_layoutOverride);
+    });
+  });
+}
+
 const componentData = [
   {
     id: 'client-profile',
@@ -143,6 +179,40 @@ class VisionGestureProvider {
   stop() {}
 }
 
+class TouchGestureProvider {
+  start(emit) {
+    let startX = 0;
+    let startY = 0;
+    let startTime = 0;
+
+    this.onTouchStart = (e) => {
+      const t = e.touches[0];
+      startX = t.clientX;
+      startY = t.clientY;
+      startTime = Date.now();
+    };
+
+    this.onTouchEnd = (e) => {
+      const t = e.changedTouches[0];
+      const dx = t.clientX - startX;
+      const dy = t.clientY - startY;
+      const dt = Date.now() - startTime;
+      if (dt > 500) return;
+      if (Math.abs(dx) < 40) return;
+      if (Math.abs(dy) > Math.abs(dx) * 0.8) return;
+      emit({ type: dx < 0 ? 'swipeLeft' : 'swipeRight', source: 'touch' });
+    };
+
+    window.addEventListener('touchstart', this.onTouchStart, { passive: true });
+    window.addEventListener('touchend', this.onTouchEnd, { passive: true });
+  }
+
+  stop() {
+    window.removeEventListener('touchstart', this.onTouchStart);
+    window.removeEventListener('touchend', this.onTouchEnd);
+  }
+}
+
 class SmartMirrorApp {
   constructor(components) {
     this.components = components;
@@ -163,7 +233,7 @@ class SmartMirrorApp {
     this.detailHint = document.getElementById('detailHint');
     this.detailContent = document.getElementById('detailContent');
 
-    this.gestureController = new GestureController([new KeyboardGestureFallback(), new VisionGestureProvider()]);
+    this.gestureController = new GestureController([new KeyboardGestureFallback(), new VisionGestureProvider(), new TouchGestureProvider()]);
   }
 
   start() {
@@ -366,6 +436,7 @@ class SmartMirrorApp {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
+  initLayoutDetection();
   const app = new SmartMirrorApp(componentData);
   app.start();
 });
